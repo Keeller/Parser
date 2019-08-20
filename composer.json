@@ -1,0 +1,15 @@
+{
+    "require": {
+        "electrolinux/phpquery": "^0.9.6",
+        "ext-json": "*",
+        "ext-mysqli":"*",
+        "gabordemooij/redbean": "*",
+        "ext-curl":"*"
+		
+    },
+	"autoload": {
+        "psr-4": {
+            "ParserCore\\":"ParserCore"
+        }
+    }
+}
