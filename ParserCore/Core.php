@@ -14,10 +14,6 @@ use RedBeanPHP\R;
 class Core
 {
     protected $htmlListString;
-    /*
-    protected $baseUrl;
-    protected $currentConfig;
-    */
     protected $parsedUrls;
     protected $currentList;
     protected $currentAnons;
@@ -25,6 +21,8 @@ class Core
     protected $currentDetail;
     protected $currentView;
     protected $currentPublishDate;
+    protected $currentHeader;
+    private static $timefLiveDate=25;
 
     public function __construct(){
 
@@ -39,22 +37,23 @@ class Core
         if(empty($result))
             die("url not found");
 
+
         $this->currentList=$result;
         $this->htmlListString=static::query($url);
-
-        return (empty($this->htmlString)||empty($this->currentSite))?static::formAnswer(false,'cant get content'):static::formAnswer(true,"OK");
     }
 
 
     protected static function query($url){
 
         $curl=curl_init();
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($curl, CURLOPT_URL,$url);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)');
         $result=curl_exec($curl);
+
 
         if ($result === false) {
             echo "Ошибка CURL: " . curl_error($curl);
@@ -65,47 +64,108 @@ class Core
 
     }
 
+    protected static function dateDiff($q){
 
-    protected function parseAnons($parsePattern){
+        if(empty($q))
+            return false;
+        $d=new \DateTime();
 
-        if(!empty($this->htmlListString)) {
-            $pq = \phpQuery::newDocument($this->htmlListString);
-            if(!empty($parsePattern))
-            {
-                $elem = $pq->find($parsePattern);
-                $this->currentAnons=$elem->htmlOuter();
-                return $this->currentAnons;
-            }
-            die('empty parse pattern');
-        }
-        die('empty html string');
+        return (($d->diff(new \DateTime($q->getProperty()['date_insert'])))->format("%d")>static::$timefLiveDate)?
+                    true:
+                    false;
+
     }
 
-    public function parseUrls( $parsePattern)
+    public function parseUrls($parsePattern)
     {
         if(!empty($this->htmlListString)) {
             $pq = \phpQuery::newDocument($this->htmlListString);
+
             if(!empty($parsePattern))
             {
                 $array=[];
                     $elem = $pq->find($parsePattern);
+
                     foreach ($elem as $value) {
                         $result = pq($value)->find('a')->attrs('href');
                         $result=array_unique($result);
-                        array_push($array, $result);
+                        $this->currentAnons=pq($value)->htmlOuter();
+                        foreach ($result as $res) {
+                            $query=R::findOne('content','url_detail=?',[$res]);
+                            if(empty($query)|| static::dateDiff($query)) {
+                            $parseRes=$this->parseDetail($res);
+
+                                if(!empty($parseRes)) {
+                                    if ($this->checkKeys($parseRes))
+                                        $this->save($parseRes,$res);
+
+                                }
+                            }
+
+                        }
+                        //array_push($array, $result);
                     }
 
-
-                $this->parsedUrls=$array;
-                return (empty($this->parsedText))?static::formAnswer(false,"result empty"):static::formAnswer(true,"OK");
             }
         }
+    }
+
+    protected function save($detail,$detailUrl){
+        $str=implode($detail);
+        $newContent=R::dispense('content');
+        $newContent->setAttr('content',$str);
+        $newContent->setAttr('site_id',$this->currentSite['id']);
+        $newContent->setAttr('url_detail',$detailUrl);
+        $newContent->setAttr('anons',$this->currentAnons);
+        if(!empty($this->currentPublishDate))
+            $newContent->setAttr('date',$this->currentPublishDate);
+        if(!empty($this->currentHeader))
+            $newContent->setAttr('header',$this->currentHeader);
+        $arg=R::store($newContent);
+        if(is_integer($arg))
+            return true;
+        else
+            return false;
+
+    }
+
+    public function createTemplate(array $params){
+
+        $tlist=R::xdispense($params['name']);
+        $tlist->setAttr('pattern',json_encode($params['pattern']));
+        $tlist->setAttr('url_list_id',$params['id']);
+        $arg=R::store($tlist);
+        if(is_integer($arg))
+            return true;
+        else
+            return false;
+
+
+    }
+
+    public function createKeys(array $params){
+
+        $keys=R::dispense('keywords');
+        $keys->setAttr('keywords',json_encode($params['kwords']));
+        $keys->setAttr('site_id',$params['id']);
+        $arg=R::store($keys);
+        if(is_integer($arg))
+            return true;
+        else
+            return false;
+    }
+
+    protected function formFullPath($url){
+        return 'http://'.$this->currentSite->getProperties()['base_url'].$url;
+
     }
 
     protected function parseDetail($url){
 
         if(empty($url))
             die('Empty Url');
+        $url=$this->formFullPath($url);
+
 
             if(!empty($this->currentDetail)){
 
@@ -113,8 +173,15 @@ class Core
                 $pq=\phpQuery::newDocument($result);
                 $parseResult=[];
 
+
                 foreach ($this->currentDetail as $value) {
-                    foreach (json_decode($value->getProperties()['pattern']) as $v) {
+
+
+
+                    $patterns=json_decode($value->getProperties()['pattern']);
+                    $this->parseSpecialPatterns($patterns,$pq);
+                    foreach ( $patterns as $v) {
+
                         $el = $pq->find($v)->htmlOuter();
                         array_push($parseResult, $el);
                     }
@@ -129,10 +196,32 @@ class Core
 
     }
 
+    protected function parseSpecialPatterns(&$patterns,&$document){
+
+
+        if(isset($patterns->date)) {
+
+            $this->currentPublishDate = implode($document->find($patterns->date)->getString());
+
+            if(strlen($this->currentPublishDate)>255 || strlen($this->currentPublishDate)==0) {
+                $this->currentPublishDate=null;
+            }
+            unset($patterns->date);
+        }
+
+        if(isset($patterns->header)) {
+            $this->currentHeader = $document->find($patterns->date)->getString();
+            unset($patterns->date);
+        }
+    }
+
     public function getView(){
 
+
         $View=R::load('url_list',$this->currentList['id']);
-        $this->currentView=$View->ownTemplateListlList;
+        $this->currentView=$View->ownTemplateListList;
+        if(empty($this->currentView))
+            die("View Empty");
 
 
     }
@@ -141,11 +230,14 @@ class Core
 
         $urlList=R::load('url_list',$this->currentList['id']);
         $this->currentDetail=$urlList->ownTemplateDetailList;
+
+        if(empty($this->currentDetail))
+            die("Detail empty");
         //var_dump($this->currentDetail[1]->getProperties());die();
 
     }
 
-    protected function checkKeys($fragments){
+    protected function checkKeys(&$fragments){
 
         if(!empty($fragments)) {
 
@@ -153,15 +245,19 @@ class Core
 
                 $site=R::load('site',$this->currentSite['id']);
                 $kwords=$site->ownKeywordsList;
+
                 $result = [];
                 foreach ($fragments as $fragment) {
 
-                    foreach (json_decode($kwords->getProperties()['keywords']) as $kword) {
+                    foreach ($kwords as $k) {
 
-                        if(stripos($fragment,$kword)!==false)
-                           return true;
+                        foreach (json_decode($k->getProperties()['keywords']) as $kword) {
+
+                            if (stripos($fragment, $kword) !== false)
+                                return true;
 
 
+                        }
                     }
 
                 }
@@ -175,17 +271,35 @@ class Core
 
     }
 
-    protected function parseSite($siteUrl){
+    protected function parseSite($site){
+
+        $this->currentSite=$site;
+        $siteList=R::load('site',$site->getId());
+        $lentaList=$siteList->ownUrlListList;
+
+
+        foreach ($lentaList as $value) {
+
+            $this->getList($value->url);
+            $this->getView();
+            $this->getDetail();
 
 
 
+
+
+            foreach ($this->currentView as $v) {
+
+                foreach (json_decode($v->getProperties()['pattern']) as $t)
+                            $this->parseUrls($t);
+
+            }
+        }
     }
 
-    public function run()
-    {
-
-
-
+    public function run(){
+        $site=R::findOne('site','id=?',[1]);
+        $this->parseSite($site);
     }
 
     protected static function formAnswer($status,$message)
@@ -212,14 +326,5 @@ class Core
     {
         $this->htmlListString = $htmlString;
     }
-
-
-
-
-
-
-
-
-
 
 }

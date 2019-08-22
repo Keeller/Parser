@@ -21,7 +21,19 @@ echo $elem->htmlOuter();
 $core=new Core();
 //$core->setBaseUrl('http://yandex.ru/');
 //$core->getDetail();
-$core->getView();
-$core->getContent('http://yandex.ru/');
-$core->parseUrls(['div[class="col-3 elem_list_rubrika bordered_bottom"]']);
-var_dump($core->getParsedText());die();
+$a=['name'=>'template_list',
+    'pattern'=>['div[class="col-3 elem_list_rubrika bordered_bottom"]'],
+    'id'=>2
+    ];
+$b=['name'=>'template_detail',
+    'pattern'=>['div[class="content_article"]','date'=>'some date pattern'],
+    'id'=>3
+];
+$kw=[
+'kwords'=>['банка','банк','банки','банковский'],
+    'id'=>1
+];
+
+
+$core->run();
+
