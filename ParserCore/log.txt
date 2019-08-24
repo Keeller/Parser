@@ -1,0 +1,4 @@
+Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
+Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru
+Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
+Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru

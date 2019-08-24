@@ -23,10 +23,19 @@ class Core
     protected $currentPublishDate;
     protected $currentHeader;
     private static $timefLiveDate=25;
+    protected $errLoger;
 
-    public function __construct(){
+    public function __construct($errLogFileName){
 
-        DbManager::connect();
+        $this->errLoger=new ErrorLoger($errLogFileName);
+        try {
+            DbManager::connect();
+        }
+        catch (\Exception $ex){
+            $this->errLoger->logError($ex->getMessage(),__METHOD__);
+            die('Fatal Error database connect not found');
+        }
+
     }
 
     protected function getList($url)
@@ -35,15 +44,16 @@ class Core
 
         $result=R::findOne('url_list','url=?',[$url]);
         if(empty($result))
-            die("url not found");
+            $this->errLoger->logError('url of List Not Found',__METHOD__,$this->currentSite->getProperties()['base_url']);
 
 
         $this->currentList=$result;
-        $this->htmlListString=static::query($url);
+        $this->htmlListString=$this->query($url);
     }
 
 
-    protected static function query($url){
+    protected  function query($url){
+
 
         $curl=curl_init();
         curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
@@ -55,8 +65,9 @@ class Core
         $result=curl_exec($curl);
 
 
+
         if ($result === false) {
-            echo "Ошибка CURL: " . curl_error($curl);
+            $this->errLoger->logError( "Ошибка CURL: " . curl_error($curl),__METHOD__,$this->currentSite->getProperties()['base_url']);
             return false;
         } else {
             return $result;
@@ -70,14 +81,15 @@ class Core
             return false;
         $d=new \DateTime();
 
-        return (($d->diff(new \DateTime($q->getProperty()['date_insert'])))->format("%d")>static::$timefLiveDate)?
+        return (($d->diff(new \DateTime($q->getProperties()['date_insert'])))->format("%d")>static::$timefLiveDate)?
                     true:
                     false;
 
     }
 
-    public function parseUrls($parsePattern)
+    protected function parseUrls($parsePattern)
     {
+
         if(!empty($this->htmlListString)) {
             $pq = \phpQuery::newDocument($this->htmlListString);
 
@@ -97,7 +109,9 @@ class Core
 
                                 if(!empty($parseRes)) {
                                     if ($this->checkKeys($parseRes))
-                                        $this->save($parseRes,$res);
+                                        $this->save($parseRes, $res);
+
+
 
                                 }
                             }
@@ -113,35 +127,22 @@ class Core
     protected function save($detail,$detailUrl){
         $str=implode($detail);
         $newContent=R::dispense('content');
+
         $newContent->setAttr('content',$str);
         $newContent->setAttr('site_id',$this->currentSite['id']);
         $newContent->setAttr('url_detail',$detailUrl);
         $newContent->setAttr('anons',$this->currentAnons);
+
         if(!empty($this->currentPublishDate))
             $newContent->setAttr('date',$this->currentPublishDate);
         if(!empty($this->currentHeader))
-            $newContent->setAttr('header',$this->currentHeader);
+            $newContent->setAttr('title',$this->currentHeader);
         $arg=R::store($newContent);
-        if(is_integer($arg))
-            return true;
-        else
-            return false;
+       (is_integer($arg))? true:false;
 
     }
 
-    public function createTemplate(array $params){
 
-        $tlist=R::xdispense($params['name']);
-        $tlist->setAttr('pattern',json_encode($params['pattern']));
-        $tlist->setAttr('url_list_id',$params['id']);
-        $arg=R::store($tlist);
-        if(is_integer($arg))
-            return true;
-        else
-            return false;
-
-
-    }
 
     public function createKeys(array $params){
 
@@ -149,10 +150,8 @@ class Core
         $keys->setAttr('keywords',json_encode($params['kwords']));
         $keys->setAttr('site_id',$params['id']);
         $arg=R::store($keys);
-        if(is_integer($arg))
-            return true;
-        else
-            return false;
+        (is_integer($arg))?true:false;
+
     }
 
     protected function formFullPath($url){
@@ -162,6 +161,7 @@ class Core
 
     protected function parseDetail($url){
 
+
         if(empty($url))
             die('Empty Url');
         $url=$this->formFullPath($url);
@@ -169,7 +169,7 @@ class Core
 
             if(!empty($this->currentDetail)){
 
-                $result=static::query($url);
+                $result=$this->query($url);
                 $pq=\phpQuery::newDocument($result);
                 $parseResult=[];
 
@@ -180,13 +180,20 @@ class Core
 
                     $patterns=json_decode($value->getProperties()['pattern']);
                     $this->parseSpecialPatterns($patterns,$pq);
+
                     foreach ( $patterns as $v) {
 
                         $el = $pq->find($v)->htmlOuter();
+                        /*
+                        var_dump($v);
+                        var_dump($el);
+                        */
                         array_push($parseResult, $el);
                     }
 
                 }
+
+
 
                 return $parseResult;
 
@@ -209,31 +216,40 @@ class Core
             unset($patterns->date);
         }
 
+
+
         if(isset($patterns->header)) {
-            $this->currentHeader = $document->find($patterns->date)->getString();
-            unset($patterns->date);
+            $this->currentHeader = implode($document->find($patterns->header)->getString());
+            unset($patterns->header);
+
         }
+
+
+
+
     }
 
-    public function getView(){
+    protected function getView(){
 
 
         $View=R::load('url_list',$this->currentList['id']);
         $this->currentView=$View->ownTemplateListList;
+
         if(empty($this->currentView))
-            die("View Empty");
+            $this->errLoger->logError('Empty View',__METHOD__,$this->currentSite->getProperties()['base_url']);
 
 
     }
 
-    public function getDetail(){
+    protected function getDetail(){
 
         $urlList=R::load('url_list',$this->currentList['id']);
         $this->currentDetail=$urlList->ownTemplateDetailList;
 
-        if(empty($this->currentDetail))
-            die("Detail empty");
-        //var_dump($this->currentDetail[1]->getProperties());die();
+        if(empty($this->currentDetail)) {
+            $this->errLoger->logError('Empty Detail', __METHOD__,$this->currentSite->getProperties()['base_url']);
+
+        }
 
     }
 
@@ -262,13 +278,14 @@ class Core
 
                 }
 
+                $this->errLoger->logWarning('In fragment not found keywords this is suspiciously',__METHOD__,$this->currentSite->getProperties()['base_url']);
+
                 return false;
 
             }
-            die('empty current site');
+           $this->errLoger->logError('empty current site',__METHOD__,$this->currentSite->getProperties()['base_url']);
         }
-        die('empty fragment');
-
+        $this->errLoger->logError('empty fragment',__METHOD__,$this->currentSite->getProperties()['base_url']);
     }
 
     protected function parseSite($site){
@@ -279,6 +296,7 @@ class Core
 
 
         foreach ($lentaList as $value) {
+
 
             $this->getList($value->url);
             $this->getView();
@@ -297,9 +315,22 @@ class Core
         }
     }
 
-    public function run(){
-        $site=R::findOne('site','id=?',[1]);
-        $this->parseSite($site);
+    public function run($id=null){
+
+        if(is_array($id)) {
+            foreach ($id as $i) {
+                $site=R::findOne('site','id=?',[$i]);
+                $this->parseSite($site);
+            }
+        }
+        else{
+            $sites=R::findAll('site');
+
+            foreach ($sites as $site){
+
+                $this->parseSite($site);
+            }
+        }
     }
 
     protected static function formAnswer($status,$message)
@@ -326,5 +357,23 @@ class Core
     {
         $this->htmlListString = $htmlString;
     }
+
+    /**
+     * @return int
+     */
+    public static function getTimefLiveDate()
+    {
+        return self::$timefLiveDate;
+    }
+
+    /**
+     * @param int $timefLiveDate
+     */
+    public static function setTimefLiveDate($timefLiveDate)
+    {
+        self::$timefLiveDate = $timefLiveDate;
+    }
+
+
 
 }
