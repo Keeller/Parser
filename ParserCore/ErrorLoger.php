@@ -35,13 +35,13 @@ class ErrorLoger
 
     public function logError($errMsg,$Method,$currentSite=''){
 
-        file_put_contents($this->LogFName,'Error: '.$errMsg.' in method '.$Method.'. For site '.$currentSite.PHP_EOL,FILE_APPEND);
+        file_put_contents($this->LogFName,date("d.m.Y h:i:s").' Error: '.$errMsg.' in method '.$Method.'. For site '.$currentSite.PHP_EOL,FILE_APPEND);
 
     }
 
     public function logWarning($warMsg,$Method,$currentSite=''){
 
-        file_put_contents($this->LogFName,'Warning: '.$warMsg.' in method '.$Method.'. For site '.$currentSite.PHP_EOL,FILE_APPEND);
+        file_put_contents($this->LogFName,date("d.m.Y h:i:s").' Warning: '.$warMsg.' in method '.$Method.'. For site '.$currentSite.PHP_EOL,FILE_APPEND);
 
     }
 

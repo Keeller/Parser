@@ -1,4 +1,4 @@
-Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
-Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru
-Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
-Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru
+26.08.2019 01:00:31 Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
+26.08.2019 01:00:31 Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru
+26.08.2019 01:10:19 Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
+26.08.2019 01:10:19 Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru

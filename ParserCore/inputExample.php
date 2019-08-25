@@ -6,22 +6,22 @@ $b=['name'=>'template_list',
 ];
 
 $c=['name'=>'template_detail',
-    'pattern'=>['div[class="content_article"]','header'=>'p[class="green_text title_2"]'],
+    'pattern'=>['div[class="content_article"]','header'=>'p[class="green_text title_2"]','date'=>''],
     'url_list_id'=>3,
     'id'=>3
 ];
 $d=[
 
-    'url'=>"https://yandex.ru/"
+    'url'=>"http://yandex.ru/"
 ];
 $hy=[
     'kwords'=>['бизнес'],
     'id'=>1
 ];
 $url=[
-    'url'=>'https://yandex.ru/',
-    'id'=>3
+    'url'=>'http://yandex.ru/',
+    'id'=>5
 
 ];
 
-file_put_contents('updateConfig.json',json_encode($c));
+file_put_contents('createConfig.json',json_encode($url));

@@ -75,6 +75,7 @@ class Core
 
     }
 
+    /*
     protected static function dateDiff($q){
 
         if(empty($q))
@@ -86,6 +87,7 @@ class Core
                     false;
 
     }
+    */
 
     protected function parseUrls($parsePattern)
     {
@@ -104,7 +106,7 @@ class Core
                         $this->currentAnons=pq($value)->htmlOuter();
                         foreach ($result as $res) {
                             $query=R::findOne('content','url_detail=?',[$res]);
-                            if(empty($query)|| static::dateDiff($query)) {
+                            if(empty($query)) {
                             $parseRes=$this->parseDetail($res);
 
                                 if(!empty($parseRes)) {
