@@ -25,10 +25,10 @@ class Config
         }
     }
 
-    public function createUrlList(array $params){
+    protected function createUrlList(array $params){
 
         if(!isset($params['url'])||!isset($params['id']))
-            return false;
+            die('params not stated');
 
         $site=R::findOne('url_list',$params['id']);
         if(!empty($site)) {
@@ -52,10 +52,10 @@ class Config
         }
     }
 
-    public function createSite(array $params){
+    protected function createSite(array $params){
 
         if(!isset($params['url']))
-            return false;
+            die('params not stated');
 
         $baseUrl=parse_url($params['url'], PHP_URL_HOST);
         $newSite=R::dispense('site');
@@ -71,10 +71,10 @@ class Config
 
     }
 
-    public function createTemplate(array $params){
+    protected function createTemplate(array $params){
 
         if(!isset($params['name'])||!isset($params['pattern'])||!isset($params['url_list_id']))
-            return false;
+            die('params not stated');
 
         $urlList=R::findOne('url_list',$params['url_list_id']);
         if(!empty($urlList)) {
@@ -96,10 +96,10 @@ class Config
 
     }
 
-    public function updateUrlList(array $params){
+    protected function updateUrlList(array $params){
 
         if(!isset($params['urll_id'])||!isset($params['id'])||!isset($params['id']))
-            return false;
+            die('params not stated');
 
 
             $newUrlList = R::load('url_list',$params['id']);
@@ -120,10 +120,30 @@ class Config
 
     }
 
-    public function updateSite(array $params){
+    protected function deleteBySiteId($siteId){
+
+        $site=R::load('site',$siteId);
+        if(!empty($site))
+            R::trash($site);
+        else
+            die('id not found');
+
+    }
+
+    protected function deleteContentByDate($mindate,$maxdate){
+
+        $content=R::find('content','DATE(date_insert)>:mindate AND DATE(date_insert)<:maxdate',[':mindate'=>$mindate,':maxdate'=>$maxdate]);
+
+        if(!empty($content))
+            R::trashAll($content);
+        else
+            die('content not found');
+    }
+
+    protected function updateSite(array $params){
 
         if(!isset($params['url'])||!isset($params['id']))
-            return false;
+            die('params not stated');
 
 
         $baseUrl=parse_url($params['url'], PHP_URL_HOST);
@@ -141,11 +161,11 @@ class Config
 
     }
 
-    public function updateTemplate(array $params){
+    protected function updateTemplate(array $params){
 
         //var_dump($params);die();
         if(!isset($params['name'])||!isset($params['pattern'])||!isset($params['id'])||!isset($params['url_list_id']))
-            die('update error');
+            die('params not stated');
 
 
 
@@ -167,10 +187,65 @@ class Config
 
     }
 
-    public function createAll(array $params){
+    protected function createKeys(array $params){
+
+        if(!isset($params['kwords'])||!isset($params['site_id']))
+            die('params not stated');
+        $keys=R::dispense('keywords');
+        $keys->setAttr('keywords',json_encode($params['kwords']));
+        $keys->setAttr('site_id',$params['site_id']);
+        $arg=R::store($keys);
+        return (is_integer($arg))?true:false;
+
+    }
+
+    protected function updateKeys(array $params){
+
+        if(!isset($params['kwords'])||!isset($params['site_id'])||!isset($params['id']))
+            die('params not stated');
+        $keys=R::load('keywords',$params['id']);
+        $keys->setAttr('keywords',json_encode($params['kwords']));
+        $keys->setAttr('site_id',$params['site_id']);
+        $arg=R::store($keys);
+        (is_integer($arg))?true:false;
+
+    }
+
+    /*
+    protected function createAll(array $params){
 
         if(!isset($params['site'])||!isset($params['list'])||!isset($params['view'])||!isset($params['detail']))
-            return false;
+            die('params not stated');
+        if($this->createSite($params['site'])) {
+            if ($this->createUrlList($params['list'])) {
+                if ($this->createTemplate($params['view'])) {
+                    if ($this->createTemplate($params['detail'])) {
+                        if ($this->createKeys($params['keys']))
+                            return true;
+                        else
+                            die('keys create error');
+                    }
+                    else
+                        die('detail create error');
+                }
+                else
+                    die('view create error');
+            }
+            else
+                die('url list create error');
+
+
+        }
+        else
+            die('Site Create error');
+
+    }
+
+
+    protected function updateAll(array $params){
+
+        if(!isset($params['site'])||!isset($params['list'])||!isset($params['view'])||!isset($params['detail']))
+            die('params not stated');
         if($this->createSite($params['site'])) {
             if ($this->createUrlList($params['list'])) {
                 if ($this->createTemplate($params['view'])) {
@@ -189,34 +264,11 @@ class Config
         }
         else
             die('Site Create error');
-
     }
-
-    public function updateAll(array $params){
-
-        if(!isset($params['site'])||!isset($params['list'])||!isset($params['view'])||!isset($params['detail']))
-            return false;
-        if($this->createSite($params['site'])) {
-            if ($this->createUrlList($params['list'])) {
-                if ($this->createTemplate($params['view'])) {
-                    if ($this->createTemplate($params['detail']))
-                        return true;
-                    else
-                        die('detail create error');
-                }
-                else
-                    die('view create error');
-            }
-            else
-                die('url list create error');
+    */
 
 
-        }
-        else
-            die('Site Create error');
-    }
-
-    public function createFromJson(){
+    protected function createFromJson(){
 
         if(file_exists('createConfig.json')) {
             $configArray = file_get_contents('createConfig.json');
@@ -225,7 +277,7 @@ class Config
         }
     }
 
-    public function updateFromJson(){
+    protected function updateFromJson(){
 
         if(file_exists('updateConfig.json')){
             $configArray = file_get_contents('updateConfig.json');
@@ -240,6 +292,14 @@ class Config
 
     public function createRun($action){
         $this->$action($this->createFromJson());
+    }
+
+    public function deleteRun($action,$param1,$param2=null){
+        if(!empty($param2))
+            $this->$action($param1,$param2);
+        else
+            $this->$action($param1);
+
     }
 
 

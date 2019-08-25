@@ -144,15 +144,7 @@ class Core
 
 
 
-    public function createKeys(array $params){
 
-        $keys=R::dispense('keywords');
-        $keys->setAttr('keywords',json_encode($params['kwords']));
-        $keys->setAttr('site_id',$params['id']);
-        $arg=R::store($keys);
-        (is_integer($arg))?true:false;
-
-    }
 
     protected function formFullPath($url){
         return 'http://'.$this->currentSite->getProperties()['base_url'].$url;

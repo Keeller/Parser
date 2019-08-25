@@ -8,10 +8,9 @@ use ParserCore\Core;
 
 
 /*
-$b=['name'=>'template_detail',
+$b=['name'=>'template_list',
     'pattern'=>['div[class="content_article"]','header'=>'p[class="green_text title_2"]'],
     'url_list_id'=>4,
-    'id'=>6
     ];
 
 $c=['name'=>'template_detail',
@@ -19,23 +18,28 @@ $c=['name'=>'template_detail',
     'url_list_id'=>3,
 ];
 $d=[
-    'id'=>2,
+
     'url'=>"https://yandex.ru/"
 ];
+$hy=[
+    'kwords'=>['бизнес'],
+    'id'=>1
+];
+$url=[
+    'url'=>'https://yandex.ru/',
+    'id'=>3
+
+];
+$x=['site'=>$d,'list'=>$url,'detail'=>$c,'view'];
 file_put_contents('updateConfig.json',json_encode($b));
 
 die();
 */
-$huy=[
-    'kwords'=>['бизнес'],
-    'id'=>1
-];
-$core=new Core("log.txt");
-$core->createKeys($huy);
-$config=new \ParserCore\Config();
 
-$core->run();
-die();
+$core=new Core("log.txt");
+
+$config=new \ParserCore\Config();
+;
 
 
 
@@ -55,11 +59,34 @@ try {
                 $str=$callableAction[1];
                 $core->$str();
                 break;
+
+            default:
+                die('Error in command syntax');
+                break;
         }
     }
-    else
-        $core->$callableAction[1]($callableAction[3]);
+    else {
 
+        switch ((string)$callableAction[0]) {
+            case 'Config':
+                if ($callableAction[1] == 'delete')
+                    if(!isset($callableAction[4]))
+                        $config->deleteRun($callableAction[2], $callableAction[3]);
+                    else
+                        $config->deleteRun($callableAction[2], $callableAction[3],$callableAction[4]);
+                break;
+
+            case 'Core':
+                $str = $callableAction[1];
+                $core->$str($callableAction[3]);
+                break;
+
+            default:
+                die('Error in command syntax');
+                break;
+        }
+
+    }
 
 
 
