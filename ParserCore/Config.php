@@ -148,7 +148,7 @@ class Config
 
     protected function updateSite(array $params){
 
-        if(!isset($params['url'])||!isset($params['id']))
+        if(!isset($params['url'])||!isset($params['id'])||!isset($params['user_id']))
             die('params not stated');
 
 
@@ -157,6 +157,7 @@ class Config
 
         try {
             $newSite->setAttr('base_url',$baseUrl);
+            $newSite->setAttr('user_id',$params['user_id']);
             $res = R::store($newSite);
             return is_integer($res)?true:false;
         }
