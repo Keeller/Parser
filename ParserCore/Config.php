@@ -13,6 +13,9 @@ use RedBeanPHP\R;
 class Config
 {
 
+    protected $createdSiteId;
+    protected $createdUrlListId;
+
 
     public function __construct(){
 
@@ -37,6 +40,7 @@ class Config
             $newUrlList->setAttr('site_id', $params['id']);
             try {
                 $res = R::store($newUrlList);
+                $this->createdUrlListId=$res;
                 return is_integer($res)?true:false;
             }
             catch (\Exception $ex) {
@@ -54,14 +58,16 @@ class Config
 
     protected function createSite(array $params){
 
-        if(!isset($params['url']))
+        if(!isset($params['url'])||!isset($params['user_id']))
             die('params not stated');
 
         $baseUrl=parse_url($params['url'], PHP_URL_HOST);
         $newSite=R::dispense('site');
         $newSite->setAttr('base_url',$baseUrl);
+        $newSite->setAttr('user_id',$params['user_id']);
         try {
             $res = R::store($newSite);
+            $this->createdSiteId=$res;
             return is_integer($res)?true:false;
         }
         catch (\Exception $ex){
@@ -211,13 +217,21 @@ class Config
 
     }
 
-    /*
+
     protected function createAll(array $params){
 
-        if(!isset($params['site'])||!isset($params['list'])||!isset($params['view'])||!isset($params['detail']))
+
+
+        if(!isset($params['site'])||!isset($params['list'])||!isset($params['view'])||!isset($params['detail'])||!isset($params['keys']))
             die('params not stated');
+        $site=R::findOne('site','base_url=?',[parse_url($params['site']['url'],PHP_URL_HOST)]);
+
+        if(!empty($site))
+            R::trash($site);
         if($this->createSite($params['site'])) {
+            $params['list']['id']=$params['keys']['site_id']=$this->createdSiteId;
             if ($this->createUrlList($params['list'])) {
+                $params['view']['url_list_id']=$params['detail']['url_list_id']=$this->createdUrlListId;
                 if ($this->createTemplate($params['view'])) {
                     if ($this->createTemplate($params['detail'])) {
                         if ($this->createKeys($params['keys']))
@@ -241,7 +255,7 @@ class Config
 
     }
 
-
+    /*
     protected function updateAll(array $params){
 
         if(!isset($params['site'])||!isset($params['list'])||!isset($params['view'])||!isset($params['detail']))
@@ -291,7 +305,14 @@ class Config
     }
 
     public function createRun($action){
-        $this->$action($this->createFromJson());
+
+        if($action!='createAll')
+            $this->$action($this->createFromJson());
+        elseif($action=='createAll'){
+            $array=$this->createFromJson();
+            foreach ($array as $value)
+                $this->createAll($value);
+        }
     }
 
     public function deleteRun($action,$param1,$param2=null){

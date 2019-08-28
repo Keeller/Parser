@@ -2,26 +2,58 @@
 
 $b=['name'=>'template_list',
     'pattern'=>['div[class="content_article"]','header'=>'p[class="green_text title_2"]'],
-    'url_list_id'=>4,
+
 ];
 
 $c=['name'=>'template_detail',
     'pattern'=>['div[class="content_article"]','header'=>'p[class="green_text title_2"]','date'=>''],
-    'url_list_id'=>3,
-    'id'=>3
+
 ];
 $d=[
 
-    'url'=>"http://yandex.ru/"
+    'url'=>"http://www.rambler.ru/"
 ];
 $hy=[
     'kwords'=>['бизнес'],
-    'id'=>1
 ];
 $url=[
-    'url'=>'http://yandex.ru/',
-    'id'=>5
+    'url'=>'http://rambler.ru/',
+
 
 ];
 
-file_put_contents('createConfig.json',json_encode($url));
+$hv=['kwords'=>['новость']];
+$d1=[
+
+    'url'=>"http://yandex.ru/"
+];
+$url1=[
+    'url'=>'http://yandex.ru./'
+];
+$c1=['name'=>'template_detail',
+    'pattern'=>['div[class="content_article"]','header'=>'p[class="green_text title_2"]','date'=>''],
+
+];
+$b1=['name'=>'template_list',
+    'pattern'=>['div[class="content_article"]','header'=>'p[class="green_text title_2"]'],
+
+];
+
+$res1=[
+    [
+        'site'=>$d,
+        'keys'=>$hy,
+        'list'=>$url,
+        'view'=>$b,
+        'detail'=>$c],
+    [
+        'site'=>$d1,
+        'keys'=>$hv,
+        'list'=>$url1,
+        'view'=>$b1,
+        'detail'=>$c1],
+
+];
+
+
+file_put_contents('createConfig.json',json_encode($res1));

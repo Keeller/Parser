@@ -24,6 +24,8 @@ class Core
     protected $currentHeader;
     private static $timefLiveDate=25;
     protected $errLoger;
+    protected $countOfReconect=0;
+    protected $durationTime=500;
 
     public function __construct($errLogFileName){
 
@@ -67,9 +69,20 @@ class Core
 
 
         if ($result === false) {
-            $this->errLoger->logError( "Ошибка CURL: " . curl_error($curl),__METHOD__,$this->currentSite->getProperties()['base_url']);
-            return false;
+
+            if($this->countOfReconect<3){
+                $this->countOfReconect++;
+                usleep($this->durationTime);
+                static::query($url);
+            }
+            else {
+                $this->errLoger->logError("Ошибка CURL: " . curl_error($curl), __METHOD__, $this->currentSite->getProperties()['base_url'] . $url);
+                $this->countOfReconect=0;
+                return false;
+            }
         } else {
+            $this->countOfReconect=0;
+            usleep($this->durationTime);
             return $result;
         }
 
@@ -100,10 +113,16 @@ class Core
                 $array=[];
                     $elem = $pq->find($parsePattern);
 
+                    if(pq($elem)->length==0)
+                        $this->errLoger->logWarning("On View template found nothing this is suspiciously: " , __METHOD__, $this->currentList->getProperties()['url']);
+
                     foreach ($elem as $value) {
+
                         $result = pq($value)->find('a')->attrs('href');
                         $result=array_unique($result);
                         $this->currentAnons=pq($value)->htmlOuter();
+
+
                         foreach ($result as $res) {
                             $query=R::findOne('content','url_detail=?',[$res]);
                             if(empty($query)) {
@@ -178,10 +197,13 @@ class Core
                     foreach ( $patterns as $v) {
 
                         $el = $pq->find($v)->htmlOuter();
+                        if(pq($el)->length==0)
+                            $this->errLoger->logWarning("On Detail template found nothing this is suspiciously: " , __METHOD__, $this->formFullPath($url));
                         /*
                         var_dump($v);
                         var_dump($el);
                         */
+
                         array_push($parseResult, $el);
                     }
 
@@ -189,10 +211,13 @@ class Core
 
 
 
+                if(count($parseResult)==0)
+                    $this->errLoger->logWarning('Empty parse result this is suspiciously',__METHOD__,$this->currentSite->getProperties()['base_url']);
+
                 return $parseResult;
 
             }
-            die('Empty Detail');
+            $this->errLoger('Empty detail',__METHOD__,$this->currentSite->getProperties()['base_url']);
 
 
     }
@@ -311,19 +336,16 @@ class Core
 
     public function run($id=null){
 
-        if(is_array($id)) {
-            foreach ($id as $i) {
-                $site=R::findOne('site','id=?',[$i]);
-                $this->parseSite($site);
-            }
+
+        if(!empty($id)) {
+            $user=R::load('users',$id);
+            $res=R::findAll('site','user_id=?',[$id]);
+            $this->durationTime=$user->getProperties()['duration_time'];
+            foreach ($res as $value)
+                $this->parseSite($value);
         }
         else{
-            $sites=R::findAll('site');
-
-            foreach ($sites as $site){
-
-                $this->parseSite($site);
-            }
+            $this->errLoger->logError('User id must set',__METHOD__);
         }
     }
 

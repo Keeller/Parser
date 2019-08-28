@@ -13,7 +13,7 @@ use ParserCore\Core;
 $core=new Core("log.txt");
 
 $config=new \ParserCore\Config();
-;
+
 
 
 
@@ -31,7 +31,10 @@ try {
 
             case 'Core':
                 $str=$callableAction[1];
-                $core->$str();
+                if(isset($callableAction[2]))
+                    $core->$str($callableAction[2]);
+                else
+                    $core->$str();
                 break;
 
             default:
@@ -48,11 +51,6 @@ try {
                         $config->deleteRun($callableAction[2], $callableAction[3]);
                     else
                         $config->deleteRun($callableAction[2], $callableAction[3],$callableAction[4]);
-                break;
-
-            case 'Core':
-                $str = $callableAction[1];
-                $core->$str($callableAction[3]);
                 break;
 
             default:

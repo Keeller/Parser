@@ -1,4 +1,29 @@
-26.08.2019 01:00:31 Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
-26.08.2019 01:00:31 Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru
-26.08.2019 01:10:19 Error: Empty View in method ParserCore\Core::getView. For site yandex.ru
-26.08.2019 01:10:19 Error: Empty Detail in method ParserCore\Core::getDetail. For site yandex.ru
+
+28.08.2019 08:27:46 Warning: View template is empty:  in method ParserCore\Core::parseUrls. For site www.rambler.ru
+28.08.2019 08:27:46 Warning: View template is empty:  in method ParserCore\Core::parseUrls. For site www.rambler.ru
+28.08.2019 08:27:46 Warning: View template is empty:  in method ParserCore\Core::parseUrls. For site yandex.ru
+28.08.2019 08:27:46 Warning: View template is empty:  in method ParserCore\Core::parseUrls. For site yandex.ru
+28.08.2019 08:29:24 Warning: On View template found nothing :  in method ParserCore\Core::parseUrls. For site http://www.rambler.ru/
+28.08.2019 08:29:24 Warning: On View template found nothing :  in method ParserCore\Core::parseUrls. For site http://www.rambler.ru/
+28.08.2019 08:29:24 Warning: On View template found nothing :  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 08:29:24 Warning: On View template found nothing :  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 08:40:49 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://www.rambler.ru/
+28.08.2019 08:40:49 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://www.rambler.ru/
+28.08.2019 08:40:49 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 08:40:49 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 08:44:16 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://www.rambler.ru/
+28.08.2019 08:44:16 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://www.rambler.ru/
+28.08.2019 08:44:16 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 08:44:16 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 10:39:50 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 10:39:50 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 10:41:01 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+28.08.2019 10:41:01 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+29.08.2019 12:22:00 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+29.08.2019 12:22:00 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+29.08.2019 12:22:02 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://rambler.ru/
+29.08.2019 12:22:02 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://rambler.ru/
+29.08.2019 12:27:51 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+29.08.2019 12:27:51 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://yandex.ru./
+29.08.2019 12:27:55 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://rambler.ru/
+29.08.2019 12:27:55 Warning: On View template found nothing this is suspiciously:  in method ParserCore\Core::parseUrls. For site http://rambler.ru/
