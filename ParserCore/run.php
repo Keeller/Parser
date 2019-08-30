@@ -15,8 +15,6 @@ $core=new Core("log.txt");
 $config=new \ParserCore\Config();
 
 
-
-
 try {
     $callableAction = explode('/', $argv[1]);
 

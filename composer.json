@@ -4,7 +4,8 @@
         "ext-json": "*",
         "ext-mysqli":"*",
         "gabordemooij/redbean": "*",
-        "ext-curl":"*"
+        "ext-curl":"*",
+        "pda/pheanstalk": "*"
 		
     },
 	"autoload": {

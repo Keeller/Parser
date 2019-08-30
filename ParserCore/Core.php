@@ -125,16 +125,10 @@ class Core
 
                         foreach ($result as $res) {
                             $query=R::findOne('content','url_detail=?',[$res]);
+
                             if(empty($query)) {
-                            $parseRes=$this->parseDetail($res);
+                                $this->parseDetail($res);
 
-                                if(!empty($parseRes)) {
-                                    if ($this->checkKeys($parseRes))
-                                        $this->save($parseRes, $res);
-
-
-
-                                }
                             }
 
                         }
@@ -145,21 +139,39 @@ class Core
         }
     }
 
-    protected function save($detail,$detailUrl){
-        $str=implode($detail);
+    protected function save($detail,$detailUrl,array $attrs=[]){
+
         $newContent=R::dispense('content');
 
-        $newContent->setAttr('content',$str);
+        $newContent->setAttr('content',$detail);
         $newContent->setAttr('site_id',$this->currentSite['id']);
         $newContent->setAttr('url_detail',$detailUrl);
         $newContent->setAttr('anons',$this->currentAnons);
-
-        if(!empty($this->currentPublishDate))
-            $newContent->setAttr('date',$this->currentPublishDate);
-        if(!empty($this->currentHeader))
-            $newContent->setAttr('title',$this->currentHeader);
         $arg=R::store($newContent);
-       (is_integer($arg))? true:false;
+
+       if(is_integer($arg)){
+
+           if(count($attrs)>0){
+               foreach ($attrs as $name=>$attr){
+                   $newAttr=R::dispense('attrs');
+                   $newAttr->setAttr('name',$name);
+                   $newAttr->setAttr('value',$attr);
+                   $newAttr->setAttr('content_id',$arg);
+                   $ans=R::store($newAttr);
+                   if(!is_integer($ans)){
+                       $this->errLoger->logError('cant save atrrs',__METHOD__);
+                       return false;
+                   }
+                   else
+                       return true;
+               }
+           }
+           else{
+               $this->errLoger->logWarning('parse pattern not found',__METHOD__);
+               return false;
+           }
+
+       }
 
     }
 
@@ -177,6 +189,7 @@ class Core
 
         if(empty($url))
             die('Empty Url');
+        $baseUrl=$url;
         $url=$this->formFullPath($url);
 
 
@@ -191,37 +204,46 @@ class Core
 
 
 
-                    $patterns=json_decode($value->getProperties()['pattern']);
-                    $this->parseSpecialPatterns($patterns,$pq);
+                    $patterns=json_decode($value->getProperties()['pattern'],true);
+                        if(!empty($patterns['main'])) {
+                            $el = $pq->find($patterns['main']);
+                            $maintemp=pq($el)->htmlOuter();
+                            unset($patterns['main']);
+                            if (pq($el)->length == 0) {
+                                $this->errLoger->logWarning("On main Detail template found nothing this is suspiciously: ", __METHOD__, $this->formFullPath($url));
+                                return;
+                            } else {
 
-                    foreach ( $patterns as $v) {
+                                if($this->checkKeys($maintemp)) {
+                                    foreach ($patterns as $name => $pattern) {
+                                        $parseResult[$name] = pq($el)->find($pattern)->htmlOuter();
 
-                        $el = $pq->find($v)->htmlOuter();
-                        if(pq($el)->length==0)
-                            $this->errLoger->logWarning("On Detail template found nothing this is suspiciously: " , __METHOD__, $this->formFullPath($url));
-                        /*
-                        var_dump($v);
-                        var_dump($el);
-                        */
+                                    }
 
-                        array_push($parseResult, $el);
-                    }
+                                    $this->save($maintemp,$baseUrl,$parseResult);
+                                }
+
+                            }
+                        }
+                        else{
+                            $this->errLoger->logError("Main patterns not stated", __METHOD__, $this->formFullPath($url));
+
+                        }
+
+
+
+
 
                 }
-
-
-
-                if(count($parseResult)==0)
-                    $this->errLoger->logWarning('Empty parse result this is suspiciously',__METHOD__,$this->currentSite->getProperties()['base_url']);
-
-                return $parseResult;
-
             }
-            $this->errLoger('Empty detail',__METHOD__,$this->currentSite->getProperties()['base_url']);
+            else
+                $this->errLoger->logError('Empty detail',__METHOD__,$this->currentSite->getProperties()['base_url']);
+
 
 
     }
 
+    /*
     protected function parseSpecialPatterns(&$patterns,&$document){
 
 
@@ -243,10 +265,8 @@ class Core
 
         }
 
-
-
-
     }
+    */
 
     protected function getView(){
 
@@ -282,20 +302,18 @@ class Core
                 $kwords=$site->ownKeywordsList;
 
                 $result = [];
-                foreach ($fragments as $fragment) {
 
                     foreach ($kwords as $k) {
 
                         foreach (json_decode($k->getProperties()['keywords']) as $kword) {
 
-                            if (stripos($fragment, $kword) !== false)
+                            if (stripos($fragments, $kword) !== false)
                                 return true;
 
 
                         }
                     }
 
-                }
 
                 $this->errLoger->logWarning('In fragment not found keywords this is suspiciously',__METHOD__,$this->currentSite->getProperties()['base_url']);
 
