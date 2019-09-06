@@ -33,7 +33,7 @@ class Config
         if(!isset($params['url'])||!isset($params['id']))
             die('params not stated');
 
-        $site=R::findOne('url_list',$params['id']);
+        $site=R::findOne('site',$params['id']);
         if(!empty($site)) {
             $newUrlList = R::xdispense('url_list');
             $newUrlList->setAttr('url', $params['url']);

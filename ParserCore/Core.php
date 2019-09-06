@@ -53,10 +53,28 @@ class Core
         $this->htmlListString=$this->query($url);
     }
 
+    protected function validateUrl($url){
+            $content=parse_url($url);
+            if(!empty($content['host'])){
+                if(filter_var($url,FILTER_VALIDATE_URL))
+                    return $url;
+                else{
+                    $this->errLoger->logError('cant validate url'.$url,__METHOD__);
+                    return false;
+                }
+
+
+            }
+            else
+                return $this->formFullPath($url);
+
+
+    }
+
 
     protected  function query($url){
 
-
+        $url=$this->validateUrl($url);
         $curl=curl_init();
         curl_setopt($curl,CURLOPT_RETURNTRANSFER,true);
         curl_setopt($curl, CURLOPT_URL,$url);
@@ -65,6 +83,7 @@ class Core
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)');
         $result=curl_exec($curl);
+
 
 
 
@@ -88,7 +107,7 @@ class Core
 
     }
 
-    /*
+
     protected static function dateDiff($q){
 
         if(empty($q))
@@ -100,7 +119,7 @@ class Core
                     false;
 
     }
-    */
+
 
     protected function parseUrls($parsePattern)
     {
@@ -176,7 +195,13 @@ class Core
     }
 
 
-
+    protected function getDetailUrl($url){
+        $content=parse_url($url);
+        $result=$content['path'];
+        if(!empty($content['query']))
+            $result.='?'.$content['query'];
+        return $result;
+    }
 
 
     protected function formFullPath($url){
@@ -184,13 +209,14 @@ class Core
 
     }
 
-    protected function parseDetail($url){
+    public function parseDetail($url){
 
 
         if(empty($url))
             die('Empty Url');
-        $baseUrl=$url;
-        $url=$this->formFullPath($url);
+        $baseUrl=$this->getDetailUrl($url);
+
+
 
 
             if(!empty($this->currentDetail)){
@@ -209,6 +235,7 @@ class Core
                             $el = $pq->find($patterns['main']);
                             $maintemp=pq($el)->htmlOuter();
                             unset($patterns['main']);
+
                             if (pq($el)->length == 0) {
                                 $this->errLoger->logWarning("On main Detail template found nothing this is suspiciously: ", __METHOD__, $this->formFullPath($url));
                                 return;

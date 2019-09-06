@@ -1,25 +1,24 @@
 {
-  "rambler":{
+ "cnews":{
   "site": {
-    "url": "http://www.rambler.ru/",
+    "url": "http://cnews.ru/",
     "user_id":1
   },
   "keys": {
     "kwords": {
-       "0":"word",
-       "1":"another word"
+       "0":"квартал"
     }
   },
   "list": {
-    "url": "http://rambler.ru/"
+    "url": "http://cnews.ru/"
   },
     "detail":{
       "name":"template_detail",
-      "pattern":{"0":"div[class=\"content_article\"]","header":"p[class=\"green_text title_2\"]","date":""}
+      "pattern":{"main":"article[class=\"news_container\"]","header":"h1","keywords":"div[class=\"article-menu_base\"]","date":"div[class=\"article_date\"]","anons":"b[class=\"Anonce\"]"}
     },
     "view":{
       "name":"template_list",
-      "pattern":{"0":"div[class=\"content_article\"]","header":"p[class=\"green_text title_2\"]","date":""}
+      "pattern":{"0":"ul[class=\"flex-grow-1\"]"}
     }
   }
 }
