@@ -161,7 +161,6 @@ class Core
     protected function save($detail,$detailUrl,array $attrs=[]){
 
         $newContent=R::dispense('content');
-
         $newContent->setAttr('content',$detail);
         $newContent->setAttr('site_id',$this->currentSite['id']);
         $newContent->setAttr('url_detail',$detailUrl);
@@ -181,8 +180,7 @@ class Core
                        $this->errLoger->logError('cant save atrrs',__METHOD__);
                        return false;
                    }
-                   else
-                       return true;
+
                }
            }
            else{
@@ -245,6 +243,7 @@ class Core
                                 if($this->checkKeys($maintemp)) {
                                     foreach ($patterns as $name => $pattern) {
                                         $parseResult[$name] = pq($el)->find($pattern)->htmlOuter();
+
 
                                     }
 

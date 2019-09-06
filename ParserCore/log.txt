@@ -1,0 +1,53 @@
+06.09.2019 02:32:26 Error: Empty Detail in method ParserCore\Core::getDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:32:26 Error: Empty detail in method ParserCore\Core::parseDetail. For site cnews.ru
+06.09.2019 02:33:09 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:10 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:33:11 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:01 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:02 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:02 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:02 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:56 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:56 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:56 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:56 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:56 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:56 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:56 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:57 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:57 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:57 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:57 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:57 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
+06.09.2019 02:36:57 Warning: In fragment not found keywords this is suspiciously in method ParserCore\Core::checkKeys. For site cnews.ru
