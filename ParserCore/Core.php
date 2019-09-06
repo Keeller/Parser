@@ -143,7 +143,7 @@ class Core
 
 
                         foreach ($result as $res) {
-                            $query=R::findOne('content','url_detail=?',[$res]);
+                            $query=R::findOne('content','url_detail=?',[$this->getDetailUrl($res)]);
 
                             if(empty($query)) {
                                 $this->parseDetail($res);
@@ -200,6 +200,7 @@ class Core
         $result=$content['path'];
         if(!empty($content['query']))
             $result.='?'.$content['query'];
+
         return $result;
     }
 
