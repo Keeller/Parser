@@ -5,7 +5,8 @@
         "ext-mysqli":"*",
         "gabordemooij/redbean": "*",
         "ext-curl":"*",
-        "pda/pheanstalk": "*"
+        "pda/pheanstalk": "*",
+        "cijic/phpmorphy": "*"
 		
     },
 	"autoload": {

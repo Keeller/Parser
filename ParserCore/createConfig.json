@@ -1,24 +1,26 @@
 {
  "cnews":{
   "site": {
-    "url": "http://cnews.ru/",
+    "url": "http://uralsib.mserv.me/",
     "user_id":1
   },
   "keys": {
     "kwords": {
-       "0":"квартал"
+       "0":"банк",
+	   "1":"банка",
+	   "2":"бизнес"
     }
   },
   "list": {
-    "url": "http://cnews.ru/"
+    "url": "http://uralsib.mserv.me/novosti/novosti-banka/"
   },
     "detail":{
       "name":"template_detail",
-      "pattern":{"main":"article[class=\"news_container\"]","header":"h1","keywords":"div[class=\"article-menu_base\"]","date":"div[class=\"article_date\"]","anons":"b[class=\"Anonce\"]"}
+      "pattern":{"main":"div[class=\"page container\"]","header":"p[class=\"green_text title_2\"]"}
     },
     "view":{
       "name":"template_list",
-      "pattern":{"0":"ul[class=\"flex-grow-1\"]"}
+      "pattern":{"0":"div[class=\"col-3 elem_list_rubrika bordered_bottom\"]"}
     }
   }
 }

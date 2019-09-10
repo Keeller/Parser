@@ -146,6 +146,7 @@ class Core
                             $query=R::findOne('content','url_detail=?',[$this->getDetailUrl($res)]);
 
                             if(empty($query)) {
+
                                 $this->parseDetail($res);
 
                             }
@@ -165,6 +166,7 @@ class Core
         $newContent->setAttr('site_id',$this->currentSite['id']);
         $newContent->setAttr('url_detail',$detailUrl);
         $newContent->setAttr('anons',$this->currentAnons);
+
         $arg=R::store($newContent);
 
        if(is_integer($arg)){
@@ -216,8 +218,6 @@ class Core
         $baseUrl=$this->getDetailUrl($url);
 
 
-
-
             if(!empty($this->currentDetail)){
 
                 $result=$this->query($url);
@@ -235,14 +235,16 @@ class Core
                             $maintemp=pq($el)->htmlOuter();
                             unset($patterns['main']);
 
+
                             if (pq($el)->length == 0) {
                                 $this->errLoger->logWarning("On main Detail template found nothing this is suspiciously: ", __METHOD__, $this->formFullPath($url));
                                 return;
                             } else {
 
                                 if($this->checkKeys($maintemp)) {
+
                                     foreach ($patterns as $name => $pattern) {
-                                        $parseResult[$name] = pq($el)->find($pattern)->htmlOuter();
+                                        $parseResult[$name] = pq($el)->find($pattern)->html();
 
 
                                     }
@@ -328,14 +330,17 @@ class Core
                 $site=R::load('site',$this->currentSite['id']);
                 $kwords=$site->ownKeywordsList;
 
+
                 $result = [];
 
                     foreach ($kwords as $k) {
 
                         foreach (json_decode($k->getProperties()['keywords']) as $kword) {
 
-                            if (stripos($fragments, $kword) !== false)
+                            if (stripos($fragments, $kword) !== false) {
+
                                 return true;
+                            }
 
 
                         }

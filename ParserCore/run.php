@@ -8,8 +8,6 @@ use ParserCore\Core;
 
 
 
-
-
 $core=new Core("log.txt");
 
 $config=new \ParserCore\Config();
