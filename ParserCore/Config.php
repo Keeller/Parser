@@ -18,7 +18,6 @@ class Config
 
 
     public function __construct(){
-
         if(!R::testConnection()) {
             try {
                 DbManager::connect();
