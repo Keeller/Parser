@@ -20,7 +20,7 @@ class DbManager
 
     public static function connect(){
 
-        R::setup( 'mysql:host=127.0.0.1;dbname=parser_db','parser_user', 'zug7019', false);
+        R::setup( 'mysql:host=127.0.0.1;dbname=parser_db','root', '', false);
         if(!R::testConnection())
             die('No db Connection');
         try {

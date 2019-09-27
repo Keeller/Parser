@@ -28,6 +28,7 @@ class Core
     protected $errLoger;
     protected $countOfReconect=0;
     protected $durationTime=500;
+    protected $countPage=0;
 
 
     public function __construct($errLogFileName){
@@ -152,8 +153,10 @@ class Core
                             $query=R::findOne('content','url_detail=?',[$this->getDetailUrl($res)]);
 
                             if(empty($query)) {
-
-                                $this->parseDetail($res);
+                                if($this->countPage<101) {
+                                    $this->parseDetail($res);
+                                    $this->countPage++;
+                                }
 
                             }
 
@@ -380,6 +383,7 @@ class Core
     protected function parseSite($site){
 
         $this->currentSite=$site;
+        $this->countPage=0;
         $siteList=R::load('site',$site->getId());
         $lentaList=$siteList->ownUrlListList;
 
