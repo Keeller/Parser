@@ -1,26 +1,35 @@
 {
  "cnews":{
   "site": {
-    "url": "http://uralsib.mserv.me/",
+    "url": "https://www.cta.ru",
     "user_id":1
   },
   "keys": {
     "kwords": {
-       "0":"банк",
-	   "1":"банка",
-	   "2":"бизнес"
+       "0":"автоматизация",
+	   "1":"конференция",
+	   "2":"выставка",
+       "3":"контроль",
+       "4":"учет",
+       "5":"энергоэффективность",
+       "6":"сколково",
+       "7":"отрасль",
+       "8":"разработчик",
+       "9":"производитель",
+       "10":"диалог",
+      "11":"Форум"
     }
   },
   "list": {
-    "url": "http://uralsib.mserv.me/novosti/novosti-banka/"
+    "url": "https://www.cta.ru/news/"
   },
     "detail":{
       "name":"template_detail",
-      "pattern":{"main":"div[class=\"page container\"]","header":"p[class=\"green_text title_2\"]"}
+      "pattern":{"main":"table[width=\"440\"]","header":"p[class=\"head\"]","date":"td[class=\"newsdate\"]","anons":"td[class=\"underlink\"]"}
     },
     "view":{
       "name":"template_list",
-      "pattern":{"0":"div[class=\"col-3 elem_list_rubrika bordered_bottom\"]"}
+      "pattern":{"0":"table[class=\"small\"]"}
     }
   }
 }

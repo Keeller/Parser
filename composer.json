@@ -6,7 +6,10 @@
         "gabordemooij/redbean": "*",
         "ext-curl":"*",
         "pda/pheanstalk": "*",
-        "cijic/phpmorphy": "*"
+        "cijic/phpmorphy": "*",
+        "ext-mbstring":"*",
+        "ext-iconv":"*",
+        "ext-dom":"*"
 		
     },
 	"autoload": {

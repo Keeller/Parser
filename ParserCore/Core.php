@@ -11,6 +11,8 @@ namespace ParserCore;
 
 use RedBeanPHP\R;
 
+
+
 class Core
 {
     protected $htmlListString;
@@ -26,6 +28,7 @@ class Core
     protected $errLoger;
     protected $countOfReconect=0;
     protected $durationTime=500;
+
 
     public function __construct($errLogFileName){
 
@@ -72,6 +75,8 @@ class Core
     }
 
 
+
+
     protected  function query($url){
 
         $url=$this->validateUrl($url);
@@ -82,9 +87,9 @@ class Core
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)');
+        curl_setopt($curl, CURLOPT_ENCODING ,"");
+        //curl_setopt($curl, CURLOPT_HEADER, true);
         $result=curl_exec($curl);
-
-
 
 
         if ($result === false) {
@@ -102,6 +107,7 @@ class Core
         } else {
             $this->countOfReconect=0;
             usleep($this->durationTime);
+
             return $result;
         }
 
@@ -196,16 +202,28 @@ class Core
 
 
     protected function getDetailUrl($url){
+
+
+        if(stripos($url,'/')===false) {
+            return $this->currentList->getProperties()['url'] . $url;
+        }
+
         $content=parse_url($url);
         $result=$content['path'];
         if(!empty($content['query']))
             $result.='?'.$content['query'];
+
 
         return $result;
     }
 
 
     protected function formFullPath($url){
+
+        if(stripos($url,'/')===false) {
+
+            return $this->currentList->getProperties()['url'] . $url;
+        }
         return 'http://'.$this->currentSite->getProperties()['base_url'].$url;
 
     }
@@ -221,7 +239,8 @@ class Core
             if(!empty($this->currentDetail)){
 
                 $result=$this->query($url);
-                $pq=\phpQuery::newDocument($result);
+
+                $pq=\phpQuery::newDocument('<meta charset="utf-8">'.$result);
                 $parseResult=[];
 
 
@@ -234,6 +253,7 @@ class Core
                             $el = $pq->find($patterns['main']);
                             $maintemp=pq($el)->htmlOuter();
                             unset($patterns['main']);
+                            //echo $el->html();
 
 
                             if (pq($el)->length == 0) {
@@ -244,7 +264,7 @@ class Core
                                 if($this->checkKeys($maintemp)) {
 
                                     foreach ($patterns as $name => $pattern) {
-                                        $parseResult[$name] = pq($el)->find($pattern)->html();
+                                        $parseResult[$name] = implode(pq($el)->find($pattern)->getString());
 
 
                                     }
@@ -322,7 +342,7 @@ class Core
     }
 
     protected function checkKeys(&$fragments){
-
+        //var_dump($fragments);
         if(!empty($fragments)) {
 
             if(!empty($this->currentSite)) {
